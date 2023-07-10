@@ -12,3 +12,17 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+
+**/*.rs.bk
+.#*
+.gdb_history
+Cargo.lock
+target/
+
+# editor files
+.vscode/*
+!.vscode/*.md
+!.vscode/*.svd
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
