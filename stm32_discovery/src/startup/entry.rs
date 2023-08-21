@@ -1,7 +1,7 @@
 use crate::main;
 use core::ptr::{read, write_volatile};
 use core::mem::zeroed;
-use core::arch::asm;
+
 
 #[no_mangle]
 pub unsafe extern "C" fn reset_handler() -> ! {

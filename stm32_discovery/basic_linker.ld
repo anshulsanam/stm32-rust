@@ -1,4 +1,9 @@
+EXTERN(__RESET_VECTOR);
+EXTERN(__EXCEPTIONS); 
+EXTERN(__INTERRUPTS);
+EXTERN(_reset);
 ENTRY(_reset);
+
 MEMORY {
   flash(rx)  : ORIGIN = 0x08000000, LENGTH = 256k
   sram(rwx) : ORIGIN = 0x20000000, LENGTH = 40k  /* remaining 40k in a separate address space */
@@ -7,6 +12,10 @@ MEMORY {
 _estack     = ORIGIN(sram) + LENGTH(sram);    /* stack points to end of SRAM */
 
 SECTIONS {
+  PROVIDE(_ram_start = ORIGIN(sram));
+  PROVIDE(_ram_end = ORIGIN(sram) + LENGTH(sram));
+  PROVIDE(_estack = _ram_end);
+
   .vectors.exceptions  : { 
     LONG(_estack);
     KEEP(*(.vectors.exceptions)) 

@@ -20,5 +20,6 @@ fn panic(_info: &PanicInfo) -> ! {
 fn main() -> ! {
     // Just a test
     let _per = Peripherals::take().unwrap();
+
     loop {}
 }
