@@ -1,9 +1,7 @@
 # Dependencies
-Needs, 
-gcc-arm-embedded
-make
-stlink
-openocd
+Needs
+
+gcc-arm-embedded, make, stlink, openocd
 
 rustup target add thumbv7em-none-eabihf
 
