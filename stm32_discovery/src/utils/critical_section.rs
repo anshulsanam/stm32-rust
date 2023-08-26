@@ -1,5 +1,5 @@
 use critical_section::{set_impl, Impl, RawRestoreState};
-use crate::register::priority_mask;
+use super::priority_mask;
 
 struct SingleCoreCriticalSection;
 set_impl!(SingleCoreCriticalSection);

@@ -1,6 +1,7 @@
 use crate::startup::entry::reset_handler;
 use stm32f303xc_pac::Interrupt;
 use crate::utils::critical_section::InterruptNumber;
+use crate::systick::systick_handler;
 
 unsafe impl InterruptNumber for Interrupt {
     #[inline(always)]
@@ -10,13 +11,17 @@ unsafe impl InterruptNumber for Interrupt {
 }
 
 pub union Vector {
-    handler: unsafe extern "C" fn() -> !,
+    handler: unsafe extern "C" fn(),
     reserved: usize,
 }
 
 #[link_section = "_reset"]
 #[no_mangle]
-pub static __RESET_VECTOR: unsafe extern "C" fn() -> ! = reset_handler;
+pub static __RESET_VECTOR: unsafe extern "C" fn() = reset_handler;
+
+#[no_mangle]
+pub static __SYSTICK_TIMER: unsafe extern "C" fn() = systick_handler;
+
 
 #[link_section = ".vectors.exceptions"]
 #[no_mangle]
@@ -59,7 +64,7 @@ pub static __EXCEPTIONS: [Vector; 15] = [
     // Exception 14: Pend SV Interrupt [not on Cortex-M0 variants].
     Vector { reserved: 0 },
     // Exception 15: System Tick Interrupt.
-    Vector { handler: default_handler },
+    Vector { handler: __SYSTICK_TIMER },
 ];
 
 // If we are not targeting a specific device we bind all the potential device specific interrupts
@@ -75,7 +80,7 @@ pub static __INTERRUPTS: [unsafe extern "C" fn(); 74] = [{
 }; 74];
 
 #[no_mangle]
-pub unsafe extern "C" fn default_handler() -> ! {
+pub unsafe extern "C" fn default_handler() {
     #[allow(clippy::empty_loop)]
     loop {}
 }

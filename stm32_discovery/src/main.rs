@@ -3,7 +3,7 @@
 
 pub mod startup;
 pub mod utils;
-pub mod register;
+pub mod systick;
 
 use stm32f303xc_pac::Peripherals;
 
@@ -18,8 +18,21 @@ fn panic(_info: &PanicInfo) -> ! {
 }
 
 fn main() -> ! {
-    // Just a test
-    let _per = Peripherals::take().unwrap();
+    // Get our peripherals
+    let mut per = Peripherals::take().unwrap();
+    // Set up clock and stuff
+    startup::system_init(&mut per);
+    // Start ticking at 1ms
+    systick::systick_init(&mut per, 72000000); // CPU frequency, 64 Mhz
 
-    loop {}
+    // Enable clock for GPIO port E, set 9 as output
+    per.RCC.ahbenr.modify(|_, w| w.iopeen().enabled());
+    per.GPIOE.moder.modify(|_, w| w.moder9().output());
+
+    loop {
+        per.GPIOE.bsrr.write(|w| w.br9().set_bit());
+        systick::delay(100);
+        per.GPIOE.bsrr.write(|w| w.bs9().set_bit());
+        systick::delay(100);
+    }
 }

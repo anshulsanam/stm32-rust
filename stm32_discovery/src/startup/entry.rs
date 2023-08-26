@@ -4,7 +4,7 @@ use core::mem::zeroed;
 
 
 #[no_mangle]
-pub unsafe extern "C" fn reset_handler() -> ! {
+pub unsafe extern "C" fn reset_handler() {
     extern "C" {
         // These symbols come from `linker.ld`
         static mut _sbss: u32; // Start of .bss section
